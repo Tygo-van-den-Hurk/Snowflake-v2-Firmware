@@ -1,0 +1,77 @@
+{
+    "maintainer": "Tygo-van-den-Hurk",
+    "manufacturer": "Tygo van den Hurk",
+    "keyboard_name": "snowflake/v2",
+    "url": "https://github.com/Tygo-van-den-Hurk/Snowflake",
+    "tags": [ "split", "5x3_3", "pro micro", "ortho" ],
+
+    "development_board": "promicro",
+    "processor": "atmega32u4",
+    "bootloader": "caterina",
+    "bootloader_instructions": "Double press the button below the TRRS connector twice in rapid succession.",
+
+    "diode_direction": "COL2ROW",
+    "matrix_pins": {
+        "rows": [ "D4", "C6", "D7", "E6" ],
+        "cols": [ "B1", "F7", "F6", "F5", "F4" ]
+    },
+
+    "layouts": {
+        "LAYOUT_split_3x5_3": {
+            "layout": [
+
+                {"hand":"L", "matrix": [0, 0], "x": 0,   "y": 0},
+                {"hand":"L", "matrix": [0, 1], "x": 1,   "y": 0},
+                {"hand":"L", "matrix": [0, 2], "x": 2,   "y": 0},
+                {"hand":"L", "matrix": [0, 3], "x": 3,   "y": 0},
+                {"hand":"L", "matrix": [0, 4], "x": 4,   "y": 0},
+
+                {"hand":"R", "matrix": [4, 4], "x": 10,  "y": 0},
+                {"hand":"R", "matrix": [4, 3], "x": 11,  "y": 0},
+                {"hand":"R", "matrix": [4, 2], "x": 12,  "y": 0},
+                {"hand":"R", "matrix": [4, 1], "x": 13,  "y": 0},
+                {"hand":"R", "matrix": [4, 0], "x": 14,  "y": 0},
+
+
+                {"hand":"L", "matrix": [1, 0], "x": 0,   "y": 1},
+                {"hand":"L", "matrix": [1, 1], "x": 1,   "y": 1},
+                {"hand":"L", "matrix": [1, 2], "x": 2,   "y": 1},
+                {"hand":"L", "matrix": [1, 3], "x": 3,   "y": 1},
+                {"hand":"L", "matrix": [1, 4], "x": 4,   "y": 1},
+
+                {"hand":"R", "matrix": [5, 4], "x": 10,  "y": 1},
+                {"hand":"R", "matrix": [5, 3], "x": 11,  "y": 1},
+                {"hand":"R", "matrix": [5, 2], "x": 12,  "y": 1},
+                {"hand":"R", "matrix": [5, 1], "x": 13,  "y": 1},
+                {"hand":"R", "matrix": [5, 0], "x": 14,  "y": 1},
+
+
+                {"hand":"L", "matrix": [2, 0], "x": 0,   "y": 2},
+                {"hand":"L", "matrix": [2, 1], "x": 1,   "y": 2},
+                {"hand":"L", "matrix": [2, 2], "x": 2,   "y": 2},
+                {"hand":"L", "matrix": [2, 3], "x": 3,   "y": 2},
+                {"hand":"L", "matrix": [2, 4], "x": 4,   "y": 2},
+
+                {"hand":"R", "matrix": [6, 4], "x": 10,  "y": 2},
+                {"hand":"R", "matrix": [6, 3], "x": 11,  "y": 2},
+                {"hand":"R", "matrix": [6, 2], "x": 12,  "y": 2},
+                {"hand":"R", "matrix": [6, 1], "x": 13,  "y": 2},
+                {"hand":"R", "matrix": [6, 0], "x": 14,  "y": 2},
+
+                {"hand":"L", "matrix": [3, 2], "x": 0,   "y": 3},
+                {"hand":"L", "matrix": [3, 3], "x": 1,   "y": 3},
+                {"hand":"L", "matrix": [3, 4], "x": 2,   "y": 3},
+
+                {"hand":"R", "matrix": [7, 4], "x": 10,  "y": 3},
+                {"hand":"R", "matrix": [7, 3], "x": 13,  "y": 3},
+                {"hand":"R", "matrix": [7, 2], "x": 14,  "y": 3}
+            ]
+        }
+    },
+
+    "usb": {
+        "device_version": "1.0.0",
+        "pid": "0x0000",
+        "vid": "0xFEED"
+    }
+}
