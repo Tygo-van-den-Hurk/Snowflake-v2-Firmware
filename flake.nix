@@ -132,6 +132,11 @@
             firmware = packages.firmware;
           };
 
+          packages.watch = pkgs.callPackage ./scripts/watch {
+            install = packages.install;
+            flash = packages.flash;
+          };
+
           packages.firmware =
             with pkgs;
             stdenv.mkDerivation rec {
