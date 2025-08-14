@@ -6,4 +6,8 @@
 **/result
 **/result-*
 
+# pre-commit hooks
 .pre-commit-config.yaml
+
+# environment settings
+.env

@@ -64,6 +64,7 @@
           treefmtEval = treefmt-nix.lib.evalModule pkgs ./.config/treefmt.nix;
           pre-commit-check = pre-commit-hooks.lib.${system}.run (import ./.config/pre-commit.nix);
 
+          qmk_firmware_version = "0.28.10";
         in
         rec {
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Flake Check ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -81,50 +82,14 @@
 
           apps.default = apps.flash;
 
+          apps.install = {
+            type = "app";
+            program = builtins.toString "${packages.install}/bin/install";
+          };
+
           apps.flash = {
             type = "app";
-            program = builtins.toString (
-              pkgs.writeShellScript "flash" ''
-                set -e
-
-                export QMK_HOME="$(git rev-parse --show-toplevel)/qmk_firmware"
-
-                wait_for() {
-                  trap 'echo; echo "User interrupt"; exit 1' INT
-                  printf "  waiting on $1 to appear"
-                  while [ ! -e "$1" ]; do
-                    printf "."
-                    sleep 1.0
-                  done
-                  echo
-                }
-
-                echo "Flashing left first:"
-                wait_for /dev/ttyACM0
-                ${pkgs.avrdude}/bin/avrdude --verbose \
-                  --part atmega32u4 \
-                  --programmer avr109 \
-                  --port /dev/ttyACM0 \
-                  --baud 57600 \
-                  --memory flash:w:${packages.firmware}/bin/firmware_left.hex:i \
-                  --noerase 
-
-                echo "Flash successful."
-                sleep 3
-
-                echo "Flashing right next:"
-                wait_for /dev/ttyACM0
-                ${pkgs.avrdude}/bin/avrdude --verbose \
-                  --part atmega32u4 \
-                  --programmer avr109 \
-                  --port /dev/ttyACM0 \
-                  --baud 57600 \
-                  --memory flash:w:${packages.firmware}/bin/firmware_right.hex:i \
-                  --noerase 
-
-                echo "Flash successful."
-              ''
-            );
+            program = builtins.toString "${packages.flash}/bin/flash";
           };
 
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Develop ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -134,15 +99,23 @@
             shellHook = ''
               ${pre-commit-check.shellHook}
               export QMK_HOME="$(git rev-parse --show-toplevel)/qmk_firmware"
+
+              if [ -f .env ]; then
+                source .env
+              fi
             '';
 
+            pure = true;
+            
             buildInputs =
               pre-commit-check.enabledPackages
+              ++ (map (package: inputs.self.packages.${system}.${package}) (builtins.attrNames packages))
               ++ (with pkgs; [
                 git-cliff # generate release notes.
                 act # Run your GitHub Actions locally
                 git # Distributed version control system
                 qmk # Program to help users work with QMK Firmware
+                minicom # Program to interact with serial devices
                 avrdude # Command-line tool for programming Atmel AVR microcontrollers
               ]);
           };
@@ -150,6 +123,14 @@
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Build ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
           packages.default = packages.firmware;
+
+          packages.install = pkgs.callPackage ./scripts/install {
+            version = qmk_firmware_version;
+          };
+
+          packages.flash = pkgs.callPackage ./scripts/flash {
+            firmware = packages.firmware;
+          };
 
           packages.firmware =
             with pkgs;
@@ -165,8 +146,8 @@
               QMK_FIRMWARE = fetchFromGitHub rec {
                 owner = "qmk";
                 repo = "qmk_firmware";
-                rev = "0.28.10";
-                hash = "sha256-wov0r6PUEN9wbCHZOFe6n5sjBINu2dAzrzb7UNGaFBc=";
+                rev = qmk_firmware_version;
+                hash = "sha256-ierpfbTUC13jIhcMr5sVBxAmptSyTBKDrGDGm/vM7Tk=";
                 fetchSubmodules = true;
                 leaveDotGit = true;
               };
