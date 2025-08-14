@@ -6,7 +6,7 @@ set -e
 new_args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --*=*)
+        -*=*)
             key="${1%%=*}"
             val="${1#*=}"
             new_args+=("$key" "$val")
