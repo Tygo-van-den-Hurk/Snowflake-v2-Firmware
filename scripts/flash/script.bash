@@ -21,8 +21,6 @@ done
 
 set -- "${new_args[@]}"
 
-export QMK_HOME="$(git rev-parse --show-toplevel)/qmk_firmware"
-
 verbose=0
 quiet=0
 
@@ -52,12 +50,24 @@ print_usage() {
     echo "                               Defaults to $SERIAL_DEVICE_default. Can also be"
     echo "                               passed as an environment variable called:"
     echo "                               'SERIAL_DEVICE'."
+    echo "  -f, --firmware <path>:       The firmware to flash to the device. Must be a"
+    echo "                               directory with the following files:"
+    echo "                               firmware_right.hex and firmware_left.hex."
+    echo "                               Defaults to building the firmware from the"
+    echo "                               current repository if you're in a git repo"
+    echo "                               otherwise clones the repository from GitHub"
+    echo "                               and builds from there. Can also be set using"
+    echo "                               the 'FIRMWARE' environment variable."
     echo ""
 }
 
 # Loop through arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
+    -f|--firmware)
+        FIRMWARE="$2"
+        shift 2
+        ;;
     -s|--serial-device)
         SERIAL_DEVICE="$2"
         shift 2
@@ -102,16 +112,43 @@ wait_for() {
     trap 'echo; echo "User interrupt"; exit 1' INT
     printf "  waiting on $1 to appear"
     while [ ! -e "$1" ]; do
-    printf "."
-    sleep 1.0
+        printf "."
+        sleep 1.0
     done
     echo
 }
 
+
+if [ -z "$FIRMWARE" ]; then
+        
+    URL="${URL:-.}"
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        URL="$(git rev-parse --show-toplevel)"
+        print "Attempting to build firmware from current git repository."
+    fi
+
+    print "building firmware from URL: $URL."
+    FIRMWARE="$( nix build "$URL#firmware" --no-link --print-out-paths 2> /dev/null )/bin"
+    print "flashing firmware from: $FIRMWARE."
+
+    nix_exit_code="$?"
+    if [ "$nix_exit_code" -gt 0 ]; then
+        echo "Nix build exited with a non-zero code: $nix_exit_code." >&2
+        exit $nix_exit_code
+    fi
+fi
+
+if [ ! -f "$FIRMWARE/firmware_left.hex" || ! -f "$FIRMWARE/firmware_right.hex" ]; then
+    print "$FIRMWARE is missing firmware_left.hex and firmware_right.hex"
+    if [ -d "$FIRMWARE/bin" ]; then
+        print "but has bin directory. Assuming this is the directory that you meant."
+        FIRMWARE="$FIRMWARE/bin"
+    fi
+fi
+
+verbose_arg=""
 if [[ $verbose -eq 1 ]]; then
     verbose_arg="--verbose"
-else 
-    verbose_arg=""
 fi
 
 echo "Flashing left first:"
@@ -121,7 +158,7 @@ avrdude "$verbose_arg" \
     --programmer avr109 \
     --port "$SERIAL_DEVICE" \
     --baud "$BAUD_RATE" \
-    --memory flash:w:${firmware}/bin/firmware_left.hex:i \
+    --memory "flash:w:${FIRMWARE}/firmware_left.hex:i" \
     --noerase 
 
 echo "Flash successful."
@@ -134,7 +171,7 @@ avrdude "$verbose_arg" \
     --programmer avr109 \
     --port "$SERIAL_DEVICE" \
     --baud "$BAUD_RATE" \
-    --memory flash:w:${firmware}/bin/firmware_right.hex:i \
+    --memory "flash:w:${FIRMWARE}/firmware_right.hex:i" \
     --noerase 
 
 echo "Flash successful."

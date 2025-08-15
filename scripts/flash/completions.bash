@@ -8,13 +8,15 @@ _x_flash_script_completions() {
 
     case "$prev" in
         -b|--baud-rate)
-            # Complete integers for baud rate
             COMPREPLY=( $(compgen -W "9600 19200 38400 57600 115200" -- "$cur") )
             return 0
             ;;
         -s|--serial-device)
-            # Complete paths for serial devices
             COMPREPLY=( $(compgen -f -- "$cur") )
+            return 0
+            ;;
+        -f|--firmware)
+            COMPREPLY=( $(compgen -d -- "$cur") )
             return 0
             ;;
     esac
@@ -33,7 +35,7 @@ _x_flash_script_completions() {
     fi
     
     # suggest flags if current word starts with -
-    local opts="-h --help -v --verbose -q --quiet -b -b= --baud-rate --baud-rate= -s -s= --serial-device --serial-device="
+    local opts="-h --help -v --verbose -q --quiet -b -b= --baud-rate --baud-rate= -s -s= --serial-device --serial-device= -f -f= --firmware --firmware="
     COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
     return 0
 }
