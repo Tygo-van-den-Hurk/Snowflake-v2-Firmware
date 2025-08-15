@@ -1,28 +1,32 @@
 {
+  git,
   avrdude,
   stdenv,
   writeShellScriptBin,
   firmware,
 }:
-let
+
+stdenv.mkDerivation rec {
+  name = "flash";
+  src = ./.;
+
+  url = "git+https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware#firmware";
   script = writeShellScriptBin "flash" ''
 
-    firmware="${firmware}"
+    URL="${url}"
 
     avrdude() {
       ${avrdude}/bin/avrdude "$@"
       return "$?"
     }
 
+    git() {
+      ${git}/bin/git "$@"
+      return "$?"
+    }
+
     ${builtins.readFile ./script.bash}
   '';
-in
-
-stdenv.mkDerivation rec {
-  name = "flash";
-  src = ./.;
-
-  inherit script;
 
   buildPhase = ''
     runHook preBuild
