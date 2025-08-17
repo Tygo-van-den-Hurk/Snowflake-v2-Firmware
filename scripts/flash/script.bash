@@ -128,7 +128,7 @@ if [ -z "$FIRMWARE" ]; then
     fi
 
     print "building firmware from URL: $URL."
-    FIRMWARE="$( nix build "$URL#firmware" --no-link --print-out-paths 2> /dev/null )/bin"
+    FIRMWARE="$( nix build "$URL#firmware" --no-link --print-out-paths 2> /dev/null | head -n1)/bin"
     print "flashing firmware from: $FIRMWARE."
 
     nix_exit_code="$?"
@@ -138,7 +138,7 @@ if [ -z "$FIRMWARE" ]; then
     fi
 fi
 
-if [ ! -f "$FIRMWARE/firmware_left.hex" || ! -f "$FIRMWARE/firmware_right.hex" ]; then
+if [[ ! -f "$FIRMWARE/firmware_left.hex" || ! -f "$FIRMWARE/firmware_right.hex" ]]; then
     print "$FIRMWARE is missing firmware_left.hex and firmware_right.hex"
     if [ -d "$FIRMWARE/bin" ]; then
         print "but has bin directory. Assuming this is the directory that you meant."
