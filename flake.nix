@@ -65,6 +65,16 @@
           pre-commit-check = pre-commit-hooks.lib.${system}.run (import ./.config/pre-commit.nix);
 
           qmk_firmware_version = "0.28.10";
+
+          qmk_repo = pkgs.fetchFromGitHub rec {
+            owner = "qmk";
+            repo = "qmk_firmware";
+            rev = qmk_firmware_version;
+            hash = "sha256-ierpfbTUC13jIhcMr5sVBxAmptSyTBKDrGDGm/vM7Tk=";
+            fetchSubmodules = true;
+            leaveDotGit = true;
+          };
+
         in
         rec {
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Flake Check ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -106,10 +116,16 @@
             '';
 
             pure = true;
-            
+
             buildInputs =
               pre-commit-check.enabledPackages
-              ++ (map (package: inputs.self.packages.${system}.${package}) (builtins.attrNames packages))
+              ++ (map (
+                package:
+                if package == "default" || package == "firmware" then
+                  null
+                else
+                  inputs.self.packages.${system}.${package}
+              ) (builtins.attrNames packages))
               ++ (with pkgs; [
                 git-cliff # generate release notes.
                 act # Run your GitHub Actions locally
@@ -128,13 +144,11 @@
             version = qmk_firmware_version;
           };
 
-          packages.flash = pkgs.callPackage ./scripts/flash {
-            firmware = packages.firmware;
-          };
+          packages.flash = pkgs.callPackage ./scripts/flash { };
 
           packages.watch = pkgs.callPackage ./scripts/watch {
-            install = packages.install;
-            flash = packages.flash;
+            inherit (packages) install;
+            inherit (packages) flash;
           };
 
           packages.firmware =
@@ -148,14 +162,7 @@
 
               QMK_INTERACTIVE = "False";
               QMK_VERBOSE = "True";
-              QMK_FIRMWARE = fetchFromGitHub rec {
-                owner = "qmk";
-                repo = "qmk_firmware";
-                rev = qmk_firmware_version;
-                hash = "sha256-ierpfbTUC13jIhcMr5sVBxAmptSyTBKDrGDGm/vM7Tk=";
-                fetchSubmodules = true;
-                leaveDotGit = true;
-              };
+              QMK_FIRMWARE = qmk_repo;
 
               keyboard = "snowflake/v2";
               keymap = "default";
@@ -193,6 +200,10 @@
 
                 mkdir tmp
 
+                export VERSION="$(grep '#define VERSION' ${src}/keymaps/default/keymap.c | awk -F'\"' '{print $2}')"
+                echo "Key map version: $VERSION"
+                echo $VERSION > tmp/version
+
                 qmk compile --clean \
                   --keyboard ${keyboard} \
                   --keymap ${keymap} \
@@ -213,6 +224,9 @@
 
                 mkdir --parents $out/bin
                 mv tmp/*.hex $out/bin
+
+                mkdir --parents $out/share
+                mv tmp/version $out/share/
 
                 runHook postInstall
               '';
