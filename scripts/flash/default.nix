@@ -3,7 +3,6 @@
   avrdude,
   stdenv,
   writeShellScriptBin,
-  firmware,
 }:
 
 stdenv.mkDerivation rec {
