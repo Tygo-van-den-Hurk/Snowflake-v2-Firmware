@@ -11,3 +11,6 @@
 
 # environment settings
 .env
+
+# VS Code
+.vscode/settings.json
