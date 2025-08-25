@@ -2,6 +2,7 @@
   git,
   avrdude,
   stdenv,
+  bat,
   writeShellScriptBin,
 }:
 
@@ -21,6 +22,11 @@ stdenv.mkDerivation rec {
 
     git() {
       ${git}/bin/git "$@"
+      return "$?"
+    }
+
+    cat() {
+      ${bat}/bin/bat "$@"
       return "$?"
     }
 
