@@ -1,0 +1,40 @@
+Version 0.0.0: OS remapping support, navigation remaps, Custom keys, macros
+
+*OS Remapping Support*
+
+I first added OS detecting support to remap CTRL and GUI. Now, on MacOS your
+middle finger is on CMD and on Linux/Windows it's on CTRL. This means that
+you can make most shortcuts with your middle finger regardless of the platform.
+
+*Navigation Remaps*
+
+I also added navigation remaps. So on MacOS to go to the start of a file you
+press 'CMD + UP', on windows this is 'CTRL + END'. This being different is also
+a problem as now it is up to the user to remember the shortcut for each
+platform. The keyboard does this under the hood thanks to its OS remapping
+support.
+
+*Custom Keys*
+
+There are some keys that sent really weird keycodes to the OS:
+'CTRL + ALT + SHIFT + SUPER + RANDOM_KEY'. Since it is unlikely that someone
+would press 5 keys by accident we can use these as special keys.
+
+Now you can use these 60 keys as 60 individual keys being pressed. For example
+opening your browser, or performing a macro. This is support is up to the OS
+though.
+
+*Macros*
+
+QMK supports 2 macro slots. You can use these to record Key actions that the
+keyboard will then perform when they are replayed. I'd add more slots, but as
+of writing QMK only supports these 2 slots.
+
+*Known Issues*
+
+When making the arrow key combination 'ALT + ARROW' the keyboard successfully
+remaps this to 'CTRL + ARROW' instead. However it does first send the 'ALT'
+to the PC, which means that especially on linux this can trigger menu bar
+use. Meaning that your focus goes from the text box into the menu bar.
+
+Thus far there does not seem to be a solution to this problem.
