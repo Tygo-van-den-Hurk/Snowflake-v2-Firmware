@@ -121,3 +121,5 @@ if [ ! -d "$INSTALL_DIRECTORY" ]; then
 fi
 
 ln -s "$ROOT/src" "$INSTALL_LOCATION"
+
+print "Finished! Installed at: '$INSTALL_LOCATION'"
