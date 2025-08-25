@@ -24,9 +24,14 @@ set -- "${new_args[@]}"
 verbose=0
 quiet=0
 
-SERIAL_DEVICE_default="/dev/ttyACM0"
 if [ -z "$SERIAL_DEVICE" ]; then
-    SERIAL_DEVICE="$SERIAL_DEVICE_default"
+    if [ -e /dev/ttyACM0 ]; then
+        max=$(ls /dev/ttyACM* 2>/dev/null | sed 's/.*ttyACM//' | sort -n | tail -1)
+        next=$((max + 1))
+        SERIAL_DEVICE="/dev/ttyACM$next"
+    else
+        SERIAL_DEVICE="/dev/ttyACM0"
+    fi
 fi
 
 BAUD_RATE_default="57600"
@@ -43,13 +48,13 @@ print_usage() {
     echo "  -q, --quiet:                 Print less information. Cannot be combined with"
     echo "                               '--verbose'. Exits with exit code 2 if combined."
     echo "  -b, --baud-rate <int>:       The baud rate to use when flashing. Expects an"
-    echo "                               integer argument. Defaults to $BAUD_RATE_default if not"
-    echo "                               specified. Can also be passed as an environment"
-    echo "                               variable called: 'BAUD_RATE'."
+    echo "                               integer argument. Defaults to $BAUD_RATE_default"
+    echo "                               if not specified. Can also be passed as an"
+    echo "                               environment variable called: 'BAUD_RATE'."
     echo "  -s, --serial-device <path>:  The serial device to use when flashing."
-    echo "                               Defaults to $SERIAL_DEVICE_default. Can also be"
-    echo "                               passed as an environment variable called:"
-    echo "                               'SERIAL_DEVICE'."
+    echo "                               Defaults to the first /dev/ttyACM* to show up."
+    echo "                               Can also be passed as an environment variable"
+    echo "                               called: 'SERIAL_DEVICE'."
     echo "  -f, --firmware <path>:       The firmware to flash to the device. Must be a"
     echo "                               directory with the following files:"
     echo "                               firmware_right.hex and firmware_left.hex."
@@ -118,6 +123,7 @@ wait_for() {
     echo
 }
 
+print "Using Serial device '$SERIAL_DEVICE'."
 
 if [ -z "$FIRMWARE" ]; then
         
@@ -128,14 +134,16 @@ if [ -z "$FIRMWARE" ]; then
     fi
 
     print "building firmware from URL: $URL."
-    FIRMWARE="$( nix build "$URL#firmware" --no-link --print-out-paths 2> /dev/null | head -n1)/bin"
-    print "flashing firmware from: $FIRMWARE."
+    log_file=$(mktemp)
+    FIRMWARE="$( nix build "$URL#firmware" --no-link --print-out-paths --print-build-logs 2> $log_file | head -n1)/bin"
 
-    nix_exit_code="$?"
-    if [ "$nix_exit_code" -gt 0 ]; then
+    if [[ "$FIRMWARE" == "/bin" ]]; then
         echo "Nix build exited with a non-zero code: $nix_exit_code." >&2
-        exit $nix_exit_code
+        cat $log_file
+        exit 1
     fi
+    
+    print "flashing firmware from: $FIRMWARE."
 fi
 
 if [[ ! -f "$FIRMWARE/firmware_left.hex" || ! -f "$FIRMWARE/firmware_right.hex" ]]; then
