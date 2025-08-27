@@ -8,7 +8,7 @@ _x_install_script_completions() {
 
     
     # suggest flags if current word starts with -
-    local opts="-h --help -v --verbose -q --quiet -g --globally"
+    local opts="-h --help -v --verbose -q --quiet -g --globally -r --remove-others"
     COMPREPLY=( $(compgen -W "$opts" -- "$cur") )
     return 0
 }
