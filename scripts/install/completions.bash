@@ -8,7 +8,7 @@ _x_install_script_completions() {
   prev="${COMP_WORDS[COMP_CWORD - 1]}"
 
   # suggest flags if current word starts with -
-  local opts="-h --help -v --verbose -q --quiet -g --globally -r --remove-others"
+  local opts="-h --help -v --verbose -q --quiet -g --globally -r --remove-others -c --clean"
   mapfile -t COMPREPLY < <(compgen -W "$opts" -- "$cur")
   return 0
 }
