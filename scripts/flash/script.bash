@@ -3,13 +3,21 @@
 set -e
 
 # Separates --option=value into '--option' and 'value'.
+# Also splits compact short options like '-abc' into '-a' '-b' '-c'.
 new_args=()
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -*=*)
+        -*=*)  # Handle --option=value
             key="${1%%=*}"
             val="${1#*=}"
             new_args+=("$key" "$val")
+            shift
+            ;;
+        -[!-]?*)  # Handle compact short options (e.g. -abc)
+            flags="${1#-}"
+            for ((i=0; i<${#flags}; i++)); do
+                new_args+=("-${flags:i:1}")
+            done
             shift
             ;;
         *)
