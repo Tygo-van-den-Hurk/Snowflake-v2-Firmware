@@ -6,44 +6,44 @@ set -e
 # Also splits compact short options like '-abc' into '-a' '-b' '-c'.
 new_args=()
 while [[ $# -gt 0 ]]; do
-    case "$1" in
-        -*=*)  # Handle --option=value
-            key="${1%%=*}"
-            val="${1#*=}"
-            new_args+=("$key" "$val")
-            shift
-            ;;
-        -[!-]?*)  # Handle compact short options (e.g. -abc)
-            flags="${1#-}"
-            for ((i=0; i<${#flags}; i++)); do
-                new_args+=("-${flags:i:1}")
-            done
-            shift
-            ;;
-        *)
-            new_args+=("$1")
-            shift
-            ;;
-    esac
+  case "$1" in
+  -*=*) # Handle --option=value
+    key="${1%%=*}"
+    val="${1#*=}"
+    new_args+=("$key" "$val")
+    shift
+    ;;
+  -[!-]?*) # Handle compact short options (e.g. -abc)
+    flags="${1#-}"
+    for ((i = 0; i < ${#flags}; i++)); do
+      new_args+=("-${flags:i:1}")
+    done
+    shift
+    ;;
+  *)
+    new_args+=("$1")
+    shift
+    ;;
+  esac
 done
 
 set -- "${new_args[@]}"
 
 print_usage() {
-    echo "Usage: $0 [options]"
-    echo ""
-    echo "  -h, --help:           print this help message."
-    echo "  -v, --verbose:        print extra information. Cannot be combined with "
-    echo "                        '--quiet' flag."
-    echo "  -q, --quiet:          print less information. Cannot be combined with "
-    echo "                        '--verbose' flag."
-    echo "  -g, --globally:       install globally instead of locally in the repository."
-    echo "                        Not recommended because it mutates and depends on a "
-    echo "                        global state."
-    echo "  -r, --remove-others:  Remove all other keyboards in the QMK repository."
-    echo "                        default is no when global and yes when locally"
-    echo "                        installing."
-    echo ""
+  echo "Usage: $0 [options]"
+  echo ""
+  echo "  -h, --help:           print this help message."
+  echo "  -v, --verbose:        print extra information. Cannot be combined with "
+  echo "                        '--quiet' flag."
+  echo "  -q, --quiet:          print less information. Cannot be combined with "
+  echo "                        '--verbose' flag."
+  echo "  -g, --globally:       install globally instead of locally in the repository."
+  echo "                        Not recommended because it mutates and depends on a "
+  echo "                        global state."
+  echo "  -r, --remove-others:  Remove all other keyboards in the QMK repository."
+  echo "                        default is no when global and yes when locally"
+  echo "                        installing."
+  echo ""
 }
 
 VERSION=${VERSION:-"0.28.10"}
@@ -54,58 +54,58 @@ quiet=0
 
 # Loop through arguments
 while [[ $# -gt 0 ]]; do
-    case $1 in
-    -g|--globally)
-        globally=1
-        shift
-        ;;
-    -v|--verbose)
-        verbose=1
-        shift
-        ;;
-    -q|--quiet)
-        quiet=1
-        shift
-        ;;
-    -r|--remove-others)
-        remove_others=1
-        shift
-        ;;
-    -h|--help)
-        print_usage
-        exit 0
-        ;;
-    *)
-        echo "Unknown option: $1"
-        exit 1
-        ;;
-    esac
+  case $1 in
+  -g | --globally)
+    globally=1
+    shift
+    ;;
+  -v | --verbose)
+    verbose=1
+    shift
+    ;;
+  -q | --quiet)
+    quiet=1
+    shift
+    ;;
+  -r | --remove-others)
+    remove_others=1
+    shift
+    ;;
+  -h | --help)
+    print_usage
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $1"
+    exit 1
+    ;;
+  esac
 done
 
 print() {
-    if [[ $quiet -eq 1 ]]; then
-        return
-    else 
-        echo "$@"
-    fi
+  if [[ $quiet -eq 1 ]]; then
+    return
+  else
+    echo "$@"
+  fi
 }
 
 if [[ $globally -eq 0 && $remove_others -eq 0 ]]; then
-    print "installing locally, removing other keyboards from the local QMK repository."
-    remove_others=1
+  print "installing locally, removing other keyboards from the local QMK repository."
+  remove_others=1
 fi
 
 if [[ $verbose -eq 1 && $quiet -eq 1 ]]; then
-    echo "Cannot combine '--verbose' and '--quiet'."
-    exit 2 
+  echo "Cannot combine '--verbose' and '--quiet'."
+  exit 2
 fi
 
 ROOT="$(git rev-parse --show-toplevel)"
 
 if [[ $globally -eq 1 ]]; then
-    export QMK_HOME="$HOME/qmk_firmware"
+  export QMK_HOME="$HOME/qmk_firmware"
 else
-    export QMK_HOME="$ROOT/qmk_firmware"
+  export QMK_HOME="$ROOT/qmk_firmware"
 fi
 
 print "QMK_HOME=$QMK_HOME"
@@ -114,40 +114,40 @@ export INSTALL_DIRECTORY="$QMK_HOME/keyboards/snowflake"
 export INSTALL_LOCATION="$INSTALL_DIRECTORY/v2"
 
 if [ -d "$INSTALL_LOCATION" ]; then
-    print "Already installed at $INSTALL_LOCATION."
-    print "remove the folder to reinstall."
-    exit 0
+  print "Already installed at $INSTALL_LOCATION."
+  print "remove the folder to reinstall."
+  exit 0
 fi
 
 if [ ! -d "$QMK_HOME" ]; then
-    
-    if [[ $globally -eq 1 ]]; then
-        print "Cloning QMK firmware repository..."
-        git clone https://github.com/qmk/qmk_firmware.git $QMK_HOME
-        PWD="$QMK_HOME" git submodule update --init --recursive
-        PWD="$QMK_HOME" git checkout "$VERSION"
-    else
-        print "Initialising git submodule in this repository..."
-        PWD="$ROOT" git submodule update --init --recursive
-        git config submodule.qmk_firmware.ignore all
-    fi    
+
+  if [[ $globally -eq 1 ]]; then
+    print "Cloning QMK firmware repository..."
+    git clone https://github.com/qmk/qmk_firmware.git "$QMK_HOME"
+    PWD="$QMK_HOME" git submodule update --init --recursive
+    PWD="$QMK_HOME" git checkout "$VERSION"
+  else
+    print "Initialising git submodule in this repository..."
+    PWD="$ROOT" git submodule update --init --recursive
+    git config submodule.qmk_firmware.ignore all
+  fi
 else
-    print "Already cloned QMK firmware repository."
+  print "Already cloned QMK firmware repository."
 fi
 
 if [ ! -d "$QMK_HOME" ]; then
-    print "Somehow $QMK_HOME was not created"
-    exit 1
+  print "Somehow $QMK_HOME was not created"
+  exit 1
 fi
 
 if [[ $remove_others -eq 1 ]]; then
-    print "Removing other keyboards"
-    rm --recursive "$QMK_HOME/keyboards" --force
+  print "Removing other keyboards"
+  rm --recursive "$QMK_HOME/keyboards" --force
 fi
 
 if [ ! -d "$INSTALL_DIRECTORY" ]; then
-    print "Creating $INSTALL_DIRECTORY for installation later..."
-    mkdir -p "$INSTALL_DIRECTORY"
+  print "Creating $INSTALL_DIRECTORY for installation later..."
+  mkdir -p "$INSTALL_DIRECTORY"
 fi
 
 ln -s "$ROOT/src" "$INSTALL_LOCATION"
