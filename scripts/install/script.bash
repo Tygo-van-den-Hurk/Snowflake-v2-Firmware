@@ -24,17 +24,24 @@ set -- "${new_args[@]}"
 print_usage() {
     echo "Usage: $0 [options]"
     echo ""
-    echo "  -h, --help:     print this help message."
-    echo "  -v, --verbose:  print extra information. Cannot be combined with '--quiet'."
-    echo "  -q, --quiet:    print less information. Cannot be combined with '--verbose'."
-    echo "  -g, --globally: install globally instead of locally in the repository."
-    echo "                  Not recommended because it mutates and depends on a global state."
+    echo "  -h, --help:           print this help message."
+    echo "  -v, --verbose:        print extra information. Cannot be combined with "
+    echo "                        '--quiet' flag."
+    echo "  -q, --quiet:          print less information. Cannot be combined with "
+    echo "                        '--verbose' flag."
+    echo "  -g, --globally:       install globally instead of locally in the repository."
+    echo "                        Not recommended because it mutates and depends on a "
+    echo "                        global state."
+    echo "  -r, --remove-others:  Remove all other keyboards in the QMK repository."
+    echo "                        default is no when global and yes when locally"
+    echo "                        installing."
     echo ""
 }
 
 VERSION=${VERSION:-"0.28.10"}
 globally=0
 verbose=0
+remove_others=0
 quiet=0
 
 # Loop through arguments
@@ -50,6 +57,10 @@ while [[ $# -gt 0 ]]; do
         ;;
     -q|--quiet)
         quiet=1
+        shift
+        ;;
+    -r|--remove-others)
+        remove_others=1
         shift
         ;;
     -h|--help)
@@ -70,6 +81,11 @@ print() {
         echo "$@"
     fi
 }
+
+if [[ $globally -eq 0 && $remove_others -eq 0 ]]; then
+    print "installing locally, removing other keyboards from the local QMK repository."
+    remove_others=1
+fi
 
 if [[ $verbose -eq 1 && $quiet -eq 1 ]]; then
     echo "Cannot combine '--verbose' and '--quiet'."
@@ -105,6 +121,7 @@ if [ ! -d "$QMK_HOME" ]; then
     else
         print "Initialising git submodule in this repository..."
         PWD="$ROOT" git submodule update --init --recursive
+        git config submodule.qmk_firmware.ignore all
     fi    
 else
     print "Already cloned QMK firmware repository."
@@ -113,6 +130,11 @@ fi
 if [ ! -d "$QMK_HOME" ]; then
     print "Somehow $QMK_HOME was not created"
     exit 1
+fi
+
+if [[ $remove_others -eq 1 ]]; then
+    print "Removing other keyboards"
+    rm --recursive "$QMK_HOME/keyboards" --force
 fi
 
 if [ ! -d "$INSTALL_DIRECTORY" ]; then
