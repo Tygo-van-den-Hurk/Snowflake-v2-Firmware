@@ -43,6 +43,10 @@ print_usage() {
   echo "  -r, --remove-others:  Remove all other keyboards in the QMK repository."
   echo "                        default is no when global and yes when locally"
   echo "                        installing."
+  echo "  -c, --clean           Remove a previous any previous install, and install"
+  echo "                        again. Warning if combined with '--globally' as this"
+  echo "                        will remove the QMK repository and any possible changes"
+  echo "                        you have made."
   echo ""
 }
 
@@ -51,6 +55,7 @@ globally=0
 verbose=0
 remove_others=0
 quiet=0
+clean=0
 
 # Loop through arguments
 while [[ $# -gt 0 ]]; do
@@ -74,6 +79,10 @@ while [[ $# -gt 0 ]]; do
   -h | --help)
     print_usage
     exit 0
+    ;;
+  -c | --clean)
+    clean=1
+    shift
     ;;
   *)
     echo "Unknown option: $1"
@@ -109,6 +118,11 @@ else
 fi
 
 print "QMK_HOME=$QMK_HOME"
+
+if [[ $clean -eq 1 ]]; then
+  print "Cleaning previous install first..."
+  rm --recursive "$QMK_HOME" --force
+fi
 
 export INSTALL_DIRECTORY="$QMK_HOME/keyboards/snowflake"
 export INSTALL_LOCATION="$INSTALL_DIRECTORY/v2"
