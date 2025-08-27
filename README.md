@@ -77,9 +77,9 @@ This repository will contain the firmware for the Snowflake keyboard (version 2)
 
 ## Setup
 
-If you have `nix` installed, good news: you don't have to do any setup.
+If you have `nix` installed, good news: you don't have to do any setup if you don't want to. However there is the `install` command/script in case you'd like to build using the normal QMK way. All you have to do is run `nix run .# install`.
 
-If you do not have `nix` installed, then you have to either install `nix` or add this repository as a submodule to the QMK firmware.
+If you do not have `nix` installed, then you have to either install `nix` (recommended) or add this repository as a submodule to the QMK firmware:
 
 ```SH
 qmk setup --yes # run only if you have not run this in the past
@@ -145,7 +145,7 @@ hand="left" qmk flash --keyboard snowflake/v2 \
 
 ### Bootloader
 
-To enter the bootloader, double press the physical reset button on the PCB twice in rapid succession. The device `/dev/ttyACM0` should show up.
+To enter the bootloader, double press the physical reset button on the PCB twice in rapid succession. The device `/dev/ttyACM*` should show up (where * is an integer).
 
 ## Credits
 
