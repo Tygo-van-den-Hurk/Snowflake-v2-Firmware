@@ -104,12 +104,6 @@
     # Checks for spelling errors in both the files and commit messages.
     typos = {
       enable = true;
-      settings.configuration = ''
-        [files]
-        extend-exclude = [ 
-          "CHANGELOG.md"
-        ]
-      '';
       stages = [
         "pre-commit"
         "commit-msg"
