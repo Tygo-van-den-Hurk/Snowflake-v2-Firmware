@@ -51,10 +51,8 @@
 
       perSystem =
         {
-          config,
           pkgs,
           system,
-          lib,
           ...
         }:
         let
