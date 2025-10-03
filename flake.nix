@@ -38,15 +38,15 @@
         "x86_64-linux"
       ];
 
-      flake = {
-        githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
-          checks = inputs.nixpkgs.lib.getAttrs systems (
-            # check whether the packages can be build for every platform,
-            # but for linux also do the other checks. Prevents duplicated
-            # checking for non-package builds.
-            inputs.self.packages // { inherit (inputs.self.checks) x86_64-linux; }
-          );
-        };
+      flake.overlays = import ./nix/overlays inputs;
+
+      flake.githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
+        checks = inputs.nixpkgs.lib.getAttrs systems (
+          # check whether the packages can be build for every platform,
+          # but for linux also do the other checks. Prevents duplicated
+          # checking for non-package builds.
+          inputs.self.packages // { inherit (inputs.self.checks) x86_64-linux; }
+        );
       };
 
       perSystem =
@@ -63,6 +63,14 @@
           pre-commit-check = pre-commit-hooks.lib.${system}.run (import ./.config/pre-commit.nix);
         in
         rec {
+          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flake Overlays ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            config = { };
+            overlays = [ inputs.self.overlays.add-flake-pkgs ];
+          };
+
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Flake Check ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 
           checks = packages // {
