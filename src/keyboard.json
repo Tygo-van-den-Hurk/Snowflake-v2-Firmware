@@ -71,7 +71,7 @@
 
     "usb": {
         "device_version": "2.0.0",
-        "pid": "0x0000",
-        "vid": "0xFEED"
+        "pid": "0xBCBC",
+        "vid": "0x1209"
     }
 }
