@@ -4,6 +4,7 @@
   stdenv,
   bat,
   writeShellScriptBin,
+  ...
 }:
 
 stdenv.mkDerivation rec {
