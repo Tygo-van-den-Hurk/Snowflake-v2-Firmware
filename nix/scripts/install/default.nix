@@ -3,6 +3,7 @@
   stdenv,
   writeShellScriptBin,
   version,
+  ...
 }:
 let
   script = writeShellScriptBin "install" ''
