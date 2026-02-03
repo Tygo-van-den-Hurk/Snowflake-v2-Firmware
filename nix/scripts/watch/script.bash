@@ -2,7 +2,7 @@
 
 set -e
 
-# Separates --option=value into '--option' and 'value'.
+# Separates '--option=value' into '--option' and 'value'.
 # Also splits compact short options like '-abc' into '-a' '-b' '-c'.
 new_args=()
 while [[ $# -gt 0 ]]; do
