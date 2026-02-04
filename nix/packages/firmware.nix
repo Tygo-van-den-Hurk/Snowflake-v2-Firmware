@@ -117,6 +117,13 @@
 
                 runHook postInstall
               '';
+
+              meta = with lib; {
+                description = "Firmware for the ${keyboard} keyboard using the ${keymap} keymap.";
+                homepage = "https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware";
+                license = with licenses; [ epl20 ];
+                maintainers = with maintainers; [ Tygo-van-den-Hurk ];
+              };
             };
 
           keyboard = "snowflake/v2";

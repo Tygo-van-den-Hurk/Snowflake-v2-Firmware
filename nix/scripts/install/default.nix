@@ -36,8 +36,11 @@ _: {
           runHook postInstall
         '';
 
-        meta = {
+        meta = with lib; {
           description = "Clone the required repositories so that Snowflake firmware can be build the normal QMK way.";
+          homepage = "https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware";
+          license = with licenses; [ epl20 ];
+          maintainers = with maintainers; [ Tygo-van-den-Hurk ];
         };
       };
 

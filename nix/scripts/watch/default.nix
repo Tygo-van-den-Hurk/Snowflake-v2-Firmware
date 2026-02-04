@@ -41,8 +41,11 @@ _: {
           runHook postInstall
         '';
 
-        meta = {
+        meta = with lib; {
           description = "Watch for changes in the source code and automatically recompile the Snowflake firmware.";
+          homepage = "https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware";
+          license = with licenses; [ epl20 ];
+          maintainers = with maintainers; [ Tygo-van-den-Hurk ];
         };
       };
 
