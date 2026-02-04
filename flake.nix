@@ -1,138 +1,43 @@
 {
-  description = "The firmware for the 2nd version of the 'Snowflake' keyboard, build using QMK.";
+  description = "The firmware for the v2 version of the 'Snowflake' keyboard, build using QMK.";
 
-  inputs = {
+  # A collection of packages for the Nix package manager
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  # Generate Github Actions matrices from Nix Flakes
+  inputs.nix-github-actions.url = "github:nix-community/nix-github-actions";
 
-    nix-github-actions.url = "github:nix-community/nix-github-actions";
+  # Flake basics described using the module system
+  inputs.flake-parts.url = "github:hercules-ci/flake-parts";
 
-    flake-parts.url = "github:hercules-ci/flake-parts";
+  # Seamless integration of https://pre-commit.com git hooks with Nix.
+  inputs.git-hooks-nix = {
+    url = "github:cachix/git-hooks.nix";
+    inputs.flake-compat.follows = "flake-compat";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
-    pre-commit-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+  # Allow flakes to be used with Nix < 2.4
+  inputs.flake-compat = {
+    url = "github:edolstra/flake-compat";
+    flake = false;
+  };
 
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
-
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  # treefmt nix configuration modules
+  inputs.treefmt-nix = {
+    url = "github:numtide/treefmt-nix";
+    inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } rec {
-
-      imports = [ ];
-
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ./nix ];
       systems = [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-darwin"
         "x86_64-linux"
       ];
-
-      flake.overlays = import ./nix/overlays inputs;
-
-      flake.githubActions = inputs.nix-github-actions.lib.mkGithubMatrix {
-        checks = inputs.nixpkgs.lib.getAttrs systems (
-          # check whether the packages can be build for every platform,
-          # but for linux also do the other checks. Prevents duplicated
-          # checking for non-package builds.
-          inputs.self.packages // { inherit (inputs.self.checks) x86_64-linux; }
-        );
-      };
-
-      perSystem =
-        {
-          pkgs,
-          system,
-          ...
-        }:
-        let
-
-          inherit (inputs) treefmt-nix pre-commit-hooks;
-
-          treefmtEval = treefmt-nix.lib.evalModule pkgs ./.config/treefmt.nix;
-          pre-commit-check = pre-commit-hooks.lib.${system}.run (import ./.config/pre-commit.nix);
-        in
-        rec {
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flake Overlays ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          _module.args.pkgs = import inputs.nixpkgs {
-            inherit system;
-            config = { };
-            overlays = [ inputs.self.overlays.add-flake-pkgs ];
-          };
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Flake Check ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          checks = packages // {
-            formatting = treefmtEval.config.build.check inputs.self;
-            inherit pre-commit-check;
-          };
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Fmt ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          formatter = treefmtEval.config.build.wrapper;
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Run ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          apps =
-            let
-              scripts = import ./nix/scripts pkgs;
-            in
-            builtins.mapAttrs (name: script: {
-              type = "app";
-              program = "${builtins.toString script}/bin/${name}";
-              inherit (script) meta;
-            }) scripts;
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Develop ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          devShells.default = pkgs.mkShell {
-
-            shellHook = ''
-              ${pre-commit-check.shellHook}
-              export QMK_HOME="$(git rev-parse --show-toplevel)/qmk_firmware"
-
-              if [ -f .env ]; then
-                source .env
-              fi
-            '';
-
-            pure = true;
-
-            buildInputs =
-              pre-commit-check.enabledPackages
-              ++ (map (
-                package:
-                if package == "default" || pkgs.lib.hasPrefix "firmware" package then
-                  null
-                else
-                  inputs.self.packages.${system}.${package}
-              ) (builtins.attrNames packages))
-              ++ (with pkgs; [
-                git-cliff # generate release notes.
-                act # Run your GitHub Actions locally
-                git # Distributed version control system
-                qmk # Program to help users work with QMK Firmware
-                minicom # Program to interact with serial devices
-                avrdude # Command-line tool for programming Atmel AVR microcontrollers
-              ]);
-          };
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Build ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-
-          packages = import ./nix/packages pkgs;
-
-          # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-        };
     };
 }

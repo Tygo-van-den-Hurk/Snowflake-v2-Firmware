@@ -1,47 +1,53 @@
-{
-  git,
-  stdenv,
-  writeShellScriptBin,
-  version,
-  ...
-}:
-let
-  script = writeShellScriptBin "install" ''
+_: {
+  perSystem =
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
+    let
+      name = "install";
+      runtimeDependencies = with pkgs; [ git ];
+    in
+    {
+      packages.${name} = pkgs.stdenv.mkDerivation rec {
+        inherit name;
+        src = ./.;
 
-    export VERSION="${version}"
+        nativeBuildInputs =
+          runtimeDependencies
+          ++ (with pkgs; [
+            makeWrapper
+          ]);
 
-    git() {
-      ${git}/bin/git "$@"
-      return "$?"
-    }
+        phases = "installPhase";
+        installPhase = ''
+          runHook preInstall
 
-    ${builtins.readFile ./script.bash}
-  '';
-in
+          mkdir --parents $out/share/bash-completion/completions
+          cp ${src}/completions.bash $out/share/bash-completion/completions/${name}.bash
 
-stdenv.mkDerivation rec {
-  name = "install";
-  src = ./.;
+          mkdir --parents $out/bin
+          cp ${src}/script.bash $out/bin/${name}
+          patchShebangs $out/bin/${name}
+          wrapProgram $out/bin/${name} --prefix PATH : ${lib.makeBinPath runtimeDependencies}
 
-  inherit script;
+          runHook postInstall
+        '';
 
-  buildPhase = ''
-    runHook preBuild
+        meta = {
+          description = "Clone the required repositories so that Snowflake firmware can be build the normal QMK way.";
+        };
+      };
 
-    echo ${script}/bin/install
-
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir --parents $out/bin
-    cp ${script}/bin/install $out/bin/install
-
-    mkdir --parents $out/share/bash-completion/completions
-    cp $src/completions.bash $out/share/bash-completion/completions/install.bash
-
-    runHook postInstall
-  '';
+      apps.${name} =
+        let
+          app = self'.packages.${name};
+        in
+        {
+          program = "${toString app}/bin/${name}";
+          inherit (app) meta;
+        };
+    };
 }
