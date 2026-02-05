@@ -6,11 +6,12 @@ name: Nix Flake Checks
 # on your README showing the quality of your work.
 
 on:
-  push:
-    branches: [main, master, release, development]
   pull_request:
     branches: [main, master, release, development]
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master, release, development]
+    tags: [v*.*.*]
 
 jobs:
 
@@ -36,6 +37,7 @@ jobs:
     timeout-minutes: 10
     needs: build-nix-flake-check-matrix
     runs-on: ${{ matrix.os }}
+    environment: ${{ github.ref_type == 'tag' && 'production' || 'staging' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJSON(needs.build-nix-flake-check-matrix.outputs.matrix)}}
