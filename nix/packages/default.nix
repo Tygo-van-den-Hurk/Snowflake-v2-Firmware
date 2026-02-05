@@ -1,14 +1,18 @@
-pkgs:
+{ ... }:
+{
+  imports = [
+    ./firmware.nix
+  ];
 
-with pkgs;
-
-let
-  contents = builtins.readDir ./.;
-  directories = lib.filterAttrs (_name: type: type == "directory") contents;
-in
-
-# creates all the "/firmware/${keyboard}/keymap/${keymap}" derivations
-(import ./firmware.nix pkgs)
-
-# creates all the other derivations in their own sub-directories
-// builtins.mapAttrs (name: _value: import "${./.}/${name}" pkgs) directories
+  # Assign default package output to the default keymap firmware:
+  perSystem =
+    { self', ... }:
+    let
+      keyboard = "snowflake/v2";
+      keymap = "default";
+      default = "${keyboard}@${keymap}";
+    in
+    {
+      packages.default = self'.packages.${default};
+    };
+}

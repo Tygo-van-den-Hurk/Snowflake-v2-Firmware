@@ -5,6 +5,9 @@
 
 // Keyboard firmware version
 #define FIRMWARE_VERSION "v0.0.0"
+#define KEYMAP_VERSION "unknown"
+
+#define SNOWFLAKE_KEYBOARD_H "features/includes.h"
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ VIA support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ //
 

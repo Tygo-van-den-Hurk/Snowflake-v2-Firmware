@@ -60,6 +60,11 @@
 
 - [Snowflake (v2) Firmware](#snowflake-v2-firmware)
   - [Overview](#overview)
+  - [Features](#features)
+    - [OS Remapping Support](#os-remapping-support)
+    - [Custom Keys](#custom-keys)
+    - [Macros](#macros)
+  - [Known Issues](#known-issues)
   - [Setup](#setup)
   - [Building](#building)
   - [Flashing](#flashing)
@@ -74,6 +79,33 @@ This repository will contain the firmware for the Snowflake keyboard (version 2)
 - **Keyboard Maintainer**: [Tygo van den Hurk](https://github.com/Tygo-van-den-Hurk)
 - **Hardware Availability**: [The official Snowflake hardware repository](https://github.com/legacy-Tygo-van-den-Hurk/Snowflake-firmware-attempt)
 - **Hardware Supported**: only the second version of the snowflake
+
+## Features
+
+The Snowflake has some really cool features! Namely [OS Remapping Support](#os-remapping-support), [Custom Keys](#custom-keys), and [Macros](#macros).
+
+### OS Remapping Support
+
+Based on the recognised OS the keyboard will remap some shortcuts to be platform independent. For example, the control modifier on Linux or Windows is the same key as the Command on MacOS. The swap in such a way you'll never notice the difference in your favorite shortcuts!
+
+This mostly goes for the navigation shortcuts. On MacOS to go to the start of a file you press `CMD+UP`, on Windows this is `CTRL+END`. All these are remapped automatically for you. So `PRIMARY+UP` means "go all the way up", `SECONDARY+UP` means go up one bit.
+
+### Custom Keys
+
+The Snowflake has a layer with a bunch of keys who spit out really "unusual" combinations: `CTRL+ALT+SHIFT+SUPER+RANDOM_KEY`. Since they are a combination of 5 keys there is almost no way that any program listens for this and thus they are almost always free to map to. I use these for window manager control. For example: tap this key to move to workspace $n$, and double tab it to move a window to that workspace. Other ideas are: opening your browser, performing a macro, controlling your window manager etc. You would have to implement this on the OS level though.
+
+### Macros
+
+QMK supports 2 macro slots. You can use these to record Key actions that the keyboard will then perform when they are replayed. I'd add more slots, but as of writing QMK only supports these 2 slots.
+
+## Known Issues
+
+When making the arrow key combination 'ALT + ARROW' the keyboard successfully
+remaps this to 'CTRL + ARROW' instead. However it does first send the 'ALT'
+to the PC, which means that especially on Linux this can trigger menu bar
+use. Meaning that your focus goes from the text box into the menu bar.
+
+Thus far there does not seem to be a solution to this problem.
 
 ## Setup
 

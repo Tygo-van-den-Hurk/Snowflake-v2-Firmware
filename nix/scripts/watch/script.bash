@@ -2,7 +2,7 @@
 
 set -e
 
-# Separates --option=value into '--option' and 'value'.
+# Separates '--option=value' into '--option' and 'value'.
 # Also splits compact short options like '-abc' into '-a' '-b' '-c'.
 new_args=()
 while [[ $# -gt 0 ]]; do
@@ -32,6 +32,8 @@ set -- "${new_args[@]}"
 print_usage() {
   echo "Usage: $0 [options]"
   echo ""
+  echo "Options:"
+  echo ""
   echo "  -h, --help:               Print this help message."
   echo "  -v, --verbose:            Print extra information. Cannot be combined with"
   echo "                            '--quiet'. Exits with exit code 2 if combined."
@@ -43,9 +45,12 @@ print_usage() {
   echo "                            install is done in your home directory as QMK"
   echo "                            prefers it. Warning: This mutates a global state."
   echo "                            This is therefor not recommended."
+  echo "  -p, --package <package>:  The package from the nix flake to watch and build."
+  echo "                            Defaults to 'default'."
   echo ""
 }
 
+package='default'
 install_globally=0
 install_locally=0
 verbose=0
@@ -73,6 +78,11 @@ while [[ $# -gt 0 ]]; do
   -h | --help)
     print_usage
     exit 0
+    ;;
+  -p | --package)
+    shift
+    package="$1"
+    shift
     ;;
   *)
     echo "Unknown option: $1"
@@ -116,12 +126,14 @@ fi
 
 ROOT="$(git rev-parse --show-toplevel)"
 
-exec_arg="nix build $ROOT#firmware --no-link"
+exec_arg="nix build $ROOT#$package --no-link"
 if [[ $verbose -eq 1 ]]; then
   exec_arg="$exec_arg --print-build-logs"
 fi
 
-nodemon_cmd="nodemon '$verbose_arg' --watch '$ROOT/src' --exec '$exec_arg' --ext c,h,mk,json"
+extensions='c,h,mk,json,nix'
+watch="--watch '$ROOT/src' --watch '$ROOT/nix'"
+nodemon_cmd="nodemon $verbose_arg $watch --exec '$exec_arg' --ext '$extensions'"
 if [[ $quiet -eq 1 ]]; then
   nodemon_cmd="$nodemon_cmd 1> /dev/null"
 fi

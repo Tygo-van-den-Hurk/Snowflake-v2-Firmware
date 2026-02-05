@@ -1,61 +1,63 @@
-{
-  stdenv,
-  writeShellScriptBin,
-  git,
-  nodemon,
-  install,
-  flash,
-}:
-let
-  script = writeShellScriptBin "watch" ''
+_: {
+  perSystem =
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
+    let
+      name = "watch";
+      runtimeDependencies =
+        (with pkgs; [
+          nodemon
+          git
+        ])
+        ++ (with self'.packages; [
+          install
+        ]);
+    in
+    {
+      packages.${name} = pkgs.stdenv.mkDerivation rec {
+        inherit name;
+        src = ./.;
 
-    git() {
-      ${git}/bin/git "$@"
-      return "$?"
-    }
+        nativeBuildInputs =
+          runtimeDependencies
+          ++ (with pkgs; [
+            makeWrapper
+          ]);
 
-    nodemon() {
-      ${nodemon}/bin/nodemon "$@"
-      return "$?"
-    }
+        phases = "installPhase";
+        installPhase = ''
+          runHook preInstall
 
-    install() {
-      ${install}/bin/install "$@"
-      return "$?"
-    }
+          mkdir --parents $out/share/bash-completion/completions
+          cp ${src}/completions.bash $out/share/bash-completion/completions/${name}.bash
 
-    flash() {
-      ${flash}/bin/flash "$@"
-      return "$?"
-    }
+          mkdir --parents $out/bin
+          cp ${src}/script.bash $out/bin/${name}
+          patchShebangs $out/bin/${name}
+          wrapProgram $out/bin/${name} --prefix PATH : ${lib.makeBinPath runtimeDependencies}
 
-    ${builtins.readFile ./script.bash}
-  '';
-in
+          runHook postInstall
+        '';
 
-stdenv.mkDerivation rec {
-  name = "watch";
-  src = ./.;
+        meta = with lib; {
+          description = "Watch for changes in the source code and automatically recompile the Snowflake firmware.";
+          homepage = "https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware";
+          license = with licenses; [ epl20 ];
+          maintainers = with maintainers; [ Tygo-van-den-Hurk ];
+        };
+      };
 
-  inherit script;
-
-  buildPhase = ''
-    runHook preBuild
-
-    echo ${script}/bin/watch
-
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir --parents $out/bin
-    cp ${script}/bin/watch $out/bin/watch
-
-    mkdir --parents $out/share/bash-completion/completions
-    cp $src/completions.bash $out/share/bash-completion/completions/watch.bash
-
-    runHook postInstall
-  '';
+      apps.${name} =
+        let
+          app = self'.packages.${name};
+        in
+        {
+          program = "${toString app}/bin/${name}";
+          inherit (app) meta;
+        };
+    };
 }

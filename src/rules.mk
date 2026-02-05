@@ -41,13 +41,13 @@ LTO_ENABLE = yes
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Extra SRC Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # These are the other files that the compiler needs to compile for the keyboard to work.
 
-SRC += snowflake_process_detected_host_os_kb.c
-SRC += snowflake_process_arrow_navigation.c
-SRC += snowflake_keyboard_post_init_user.c
-SRC += snowflake_process_custom_keycodes.c
-SRC += snowflake_process_record_user.c
-SRC += snowflake_tap_dance_actions.c
-SRC += snowflake_dynamic_macros.c
-SRC += snowflake_key_override.c
+SRC += features/snowflake_process_detected_host_os_kb.c
+SRC += features/snowflake_process_arrow_navigation.c
+SRC += features/snowflake_keyboard_post_init_user.c
+SRC += features/snowflake_process_custom_keycodes.c
+SRC += features/snowflake_process_record_user.c
+SRC += features/snowflake_tap_dance_actions.c
+SRC += features/snowflake_dynamic_macros.c
+SRC += features/snowflake_key_override.c
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

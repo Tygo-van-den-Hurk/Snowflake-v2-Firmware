@@ -1,55 +1,62 @@
-{
-  git,
-  avrdude,
-  stdenv,
-  bat,
-  writeShellScriptBin,
-}:
+_: {
+  perSystem =
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
+    let
+      name = "flash";
+      runtimeDependencies = with pkgs; [
+        git
+        bat
+        avrdude
+      ];
+    in
+    {
+      packages.${name} = pkgs.stdenv.mkDerivation rec {
+        inherit name;
+        src = ./.;
 
-stdenv.mkDerivation rec {
-  name = "flash";
-  src = ./.;
+        nativeBuildInputs =
+          runtimeDependencies
+          ++ (with pkgs; [
+            makeWrapper
+          ]);
 
-  url = "git+https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware#firmware";
-  script = writeShellScriptBin "flash" ''
+        URL = "git+https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware#firmware";
 
-    URL="${url}"
+        phases = "installPhase";
+        installPhase = ''
+          runHook preInstall
 
-    avrdude() {
-      ${avrdude}/bin/avrdude "$@"
-      return "$?"
-    }
+          mkdir --parents $out/share/bash-completion/completions
+          cp ${src}/completions.bash $out/share/bash-completion/completions/${name}.bash
 
-    git() {
-      ${git}/bin/git "$@"
-      return "$?"
-    }
+          mkdir --parents $out/bin
+          cp ${src}/script.bash $out/bin/${name}
+          patchShebangs $out/bin/${name}
+          wrapProgram $out/bin/${name} --prefix PATH : ${lib.makeBinPath runtimeDependencies}
 
-    cat() {
-      ${bat}/bin/bat "$@"
-      return "$?"
-    }
+          runHook postInstall
+        '';
 
-    ${builtins.readFile ./script.bash}
-  '';
+        meta = with lib; {
+          description = "Flash firmware to a Snowflake keyboard.";
+          homepage = "https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware";
+          license = with licenses; [ epl20 ];
+          maintainers = with maintainers; [ Tygo-van-den-Hurk ];
+        };
+      };
 
-  buildPhase = ''
-    runHook preBuild
-
-    echo ${script}/bin/flash
-
-    runHook postBuild
-  '';
-
-  installPhase = ''
-    runHook preInstall
-
-    mkdir --parents $out/bin
-    cp ${script}/bin/flash $out/bin/flash
-
-    mkdir --parents $out/share/bash-completion/completions
-    cp $src/completions.bash $out/share/bash-completion/completions/flash.bash
-
-    runHook postInstall
-  '';
+      apps.${name} =
+        let
+          app = self'.packages.${name};
+        in
+        {
+          program = "${toString app}/bin/${name}";
+          inherit (app) meta;
+        };
+    };
 }
