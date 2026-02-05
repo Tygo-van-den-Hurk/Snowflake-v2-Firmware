@@ -8,12 +8,14 @@ _: {
     }:
     let
       name = "watch";
-      runtimeDependencies = (with pkgs; [
-        nodemon
-        git
-      ]) ++ (with self'.packages; [
-        install
-      ]);
+      runtimeDependencies =
+        (with pkgs; [
+          nodemon
+          git
+        ])
+        ++ (with self'.packages; [
+          install
+        ]);
     in
     {
       packages.${name} = pkgs.stdenv.mkDerivation rec {
