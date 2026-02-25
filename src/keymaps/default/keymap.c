@@ -5,6 +5,12 @@
 #include QMK_KEYBOARD_H
 #include SNOWFLAKE_KEYBOARD_H
 
+bool oled_task_user(void) {
+  dprintf("OLED Init\n");
+  oled_write("Hello OLED", false);
+  return false;
+}
+
 /**
  * @brief The actual keys and layers this keyboard has. This is the complete 
  * keymap.

@@ -2,7 +2,7 @@
 
 set -e
 
-# Separates --option=value into '--option' and 'value'.
+# Separates '--option=value' into '--option' and 'value'.
 # Also splits compact short options like '-abc' into '-a' '-b' '-c'.
 new_args=()
 while [[ $# -gt 0 ]]; do
@@ -125,7 +125,7 @@ if [[ $clean -eq 1 ]]; then
 fi
 
 export INSTALL_DIRECTORY="$QMK_HOME/keyboards/snowflake"
-export INSTALL_LOCATION="$INSTALL_DIRECTORY/v2"
+export INSTALL_LOCATION="$INSTALL_DIRECTORY/v4"
 
 if [ -d "$INSTALL_LOCATION" ]; then
   print "Already installed at $INSTALL_LOCATION."

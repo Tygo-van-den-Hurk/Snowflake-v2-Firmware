@@ -9,43 +9,43 @@
       <img src="https://img.shields.io/badge/devcontainer-provided-dark_green?style=flat&logo=docker&logoColor=BEC5C9" alt="devcontainer provided"/>
     </a>
     <!--~ Repository CI/CD ~-->
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/actions/workflows/deploy-github-pages.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Snowflake-v2-Firmware/deploy-github-pages.yml?style=flat&logo=GitHub%20Actions&logoColor=BEC5C9&label=Deploy" alt="GitHub Deployment status">
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/actions/workflows/deploy-github-pages.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Snowflake-v4-Firmware/deploy-github-pages.yml?style=flat&logo=GitHub%20Actions&logoColor=BEC5C9&label=Deploy" alt="GitHub Deployment status">
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/actions/workflows/nix-flake-check.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Snowflake-v2-Firmware/nix-flake-check.yml?style=flat&logo=GitHub%20Actions&logoColor=BEC5C9&label=CI/CD" alt="GitHub CI/CD status">
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/actions/workflows/nix-flake-check.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/Tygo-van-den-Hurk/Snowflake-v4-Firmware/nix-flake-check.yml?style=flat&logo=GitHub%20Actions&logoColor=BEC5C9&label=CI/CD" alt="GitHub CI/CD status">
     </a>
     <!--~ Repository Statistics ~-->
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/graphs/contributors">
-      <img src="https://img.shields.io/github/contributors/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="Contributors"/>
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/graphs/contributors">
+      <img src="https://img.shields.io/github/contributors/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="Contributors"/>
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="The Eclipse Public License v2.0 badge" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="The Eclipse Public License v2.0 badge" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/commit">
-      <img src="https://badgen.net/github/commits/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="GitHub commits" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/commit">
+      <img src="https://badgen.net/github/commits/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="GitHub commits" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/commit">
-      <img src="https://badgen.net/github/last-commit/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="GitHub latest commit" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/commit">
+      <img src="https://badgen.net/github/last-commit/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="GitHub latest commit" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/network/">
-      <img src="https://badgen.net/github/forks/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="GitHub forks" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/network/">
+      <img src="https://badgen.net/github/forks/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="GitHub forks" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/">
-      <img src="https://img.shields.io/github/languages/count/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="amount of languages in the repository" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/">
+      <img src="https://img.shields.io/github/languages/count/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="amount of languages in the repository" />
     </a>   
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/stargazers">
-      <img src="https://img.shields.io/github/stars/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="amount of stars" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/stargazers">
+      <img src="https://img.shields.io/github/stars/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="amount of stars" />
     </a>
     <!--~ Repository Updates ~-->
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/pulse">
-      <img src="https://img.shields.io/github/created-at/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="created at badge" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/pulse">
+      <img src="https://img.shields.io/github/created-at/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="created at badge" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/releases">
-      <img src="https://img.shields.io/github/release/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat&display_name=release" alt="newest release" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/releases">
+      <img src="https://img.shields.io/github/release/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat&display_name=release" alt="newest release" />
     </a>
-    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware/">
-      <img src="https://img.shields.io/github/repo-size/Tygo-van-den-Hurk/Snowflake-v2-Firmware?style=flat" alt="the size of the repository" />
+    <a href="https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware/">
+      <img src="https://img.shields.io/github/repo-size/Tygo-van-den-Hurk/Snowflake-v4-Firmware?style=flat" alt="the size of the repository" />
     </a>
     <br>
     <!--~ Banner image ~-->
@@ -56,9 +56,9 @@
 </div>
 <br>
 
-# Snowflake (v2) Firmware
+# Snowflake (v4) Firmware
 
-- [Snowflake (v2) Firmware](#snowflake-v2-firmware)
+- [Snowflake (v4) Firmware](#snowflake-v4-firmware)
   - [Overview](#overview)
   - [Setup](#setup)
   - [Building](#building)
@@ -69,7 +69,7 @@
 
 ## Overview
 
-This repository will contain the firmware for the Snowflake keyboard (version 2). Backwards of forwards compatibility is not excluded but not officially supported, use at your own discretion.
+This repository will contain the firmware for the Snowflake keyboard (version 4). Backwards of forwards compatibility is not excluded but not officially supported, use at your own discretion.
 
 - **Keyboard Maintainer**: [Tygo van den Hurk](https://github.com/Tygo-van-den-Hurk)
 - **Hardware Availability**: [The official Snowflake hardware repository](https://github.com/legacy-Tygo-van-den-Hurk/Snowflake-firmware-attempt)
@@ -82,10 +82,11 @@ If you have `nix` installed, good news: you don't have to do any setup if you do
 If you do not have `nix` installed, then you have to either install `nix` (recommended) or add this repository as a submodule to the QMK firmware:
 
 ```SH
-qmk setup --yes # run only if you have not run this in the past
-cd ~/qmk_firmware
-git submodule add 'https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware.git' lib/snowflake
-ln -s ~/qmk_firmware/lib/snowflake/src keyboards/snowflake/v2
+qmk setup --home "$HOME" --yes # run only if you have not run this in the past
+cd "$HOME/qmk_firmware"
+git submodule add 'https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware.git' "$HOME/qmk_firmware/lib/snowflake"
+mkdir --parents "$HOME/qmk_firmware/keyboards/snowflake" --verbose
+ln "$HOME/qmk_firmware/lib/snowflake/src" --symbolic "$HOME/qmk_firmware/keyboards/snowflake/v4" --verbose
 ```
 
 ## Building
@@ -93,7 +94,7 @@ ln -s ~/qmk_firmware/lib/snowflake/src keyboards/snowflake/v2
 Building the firmware:
 
 ```SH
-nix build 'github:Tygo-van-den-Hurk/Snowflake-v2-Firmware#firmware'
+nix build 'github:Tygo-van-den-Hurk/Snowflake-v4-Firmware#firmware'
 ```
 
 or if you have the repository cloned on your machine:
@@ -107,7 +108,7 @@ or if you do not have `nix` installed:
 ```SH
 # do for both left and right changing the variable at the start
 export hand="left"
-qmk compile --keyboard snowflake/v2 \
+qmk compile --keyboard snowflake/v4 \
   --keymap default \
   --env handedness=$hand \
   --clean
@@ -123,7 +124,7 @@ mv ~/qmk_firmware/*.hex ~/qmk_firmware/tmp/firmware_$hand.hex
 Flashing the firmware for this keyboard (does not require building manually first):
 
 ```SH
-nix run 'github:Tygo-van-den-Hurk/Snowflake-v2-Firmware#flash'
+nix run 'github:Tygo-van-den-Hurk/Snowflake-v4-Firmware#flash'
 ```
 
 or if you have the repository cloned on your machine
@@ -136,7 +137,7 @@ or if you do not have `nix` installed:
 
 ```SH
 # do for both left and right changing the variable at the start
-hand="left" qmk flash --keyboard snowflake/v2 \
+hand="left" qmk flash --keyboard snowflake/v4 \
   --keymap default \
   --env handedness=$hand \
   --bootloader avrdude-split-$hand \

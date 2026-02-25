@@ -92,7 +92,9 @@
               type = "app";
               program = "${builtins.toString script}/bin/${name}";
               inherit (script) meta;
-            }) scripts;
+            }) scripts // { 
+              default = inputs.self.apps.${system}.flash;
+            };
 
           # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Nix Develop ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 

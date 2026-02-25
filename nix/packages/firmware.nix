@@ -4,7 +4,7 @@ with pkgs;
 
 let
   self = ../..;
-  keyboard = "snowflake/v2";
+  keyboard = "snowflake/v4";
   contents = builtins.readDir "${self}/src/keymaps";
   keymaps = lib.filterAttrs (_name: type: type == "directory") contents;
 in

@@ -5,6 +5,7 @@
   nodemon,
   install,
   flash,
+  ...
 }:
 let
   script = writeShellScriptBin "watch" ''

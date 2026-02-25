@@ -8,6 +8,11 @@
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
+  // uprintf("keycode: %s was %s.\n", 
+  //   get_keycode_string(keycode),
+  //   record->event.pressed ? "pressed" : "released"
+  // );
+
   if (Snowflake_process_custom_keycodes(keycode, record) != CONTINUE)
     return CONCLUDE;
 

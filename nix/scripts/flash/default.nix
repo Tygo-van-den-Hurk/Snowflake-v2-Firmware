@@ -4,13 +4,14 @@
   stdenv,
   bat,
   writeShellScriptBin,
+  ...
 }:
 
 stdenv.mkDerivation rec {
   name = "flash";
   src = ./.;
 
-  url = "git+https://github.com/Tygo-van-den-Hurk/Snowflake-v2-Firmware#firmware";
+  url = "git+https://github.com/Tygo-van-den-Hurk/Snowflake-v4-Firmware#firmware";
   script = writeShellScriptBin "flash" ''
 
     URL="${url}"

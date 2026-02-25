@@ -8,13 +8,24 @@
 with pkgs;
 
 stdenv.mkDerivation rec {
-  name = "snowflake-v2-firmware";
+  name = "snowflake-v4-firmware";
   src = "${self}/src";
 
-  nativeBuildInputs = [ git ];
+  nativeBuildInputs = [ 
+    git 
+    python3
+    python3Packages.hjson
+    python3Packages.jsonschema
+    python3Packages.pillow
+  ];
+  
   buildInputs = [
     qmk
     tree
+    picotool
+    gnumake
+    python3
+    gcc-arm-embedded-13
   ];
 
   QMK_INTERACTIVE = "False";
@@ -39,17 +50,26 @@ stdenv.mkDerivation rec {
     export QMK_HOME="$HOME/qmk_firmware"
     export QMK_FIRMWARE="$QMK_HOME"
 
-    cp ${QMK_FIRMWARE}/ --recursive $QMK_HOME/
-    chmod +rw $QMK_HOME/keyboards
+    cp -r ${QMK_FIRMWARE}/ $QMK_HOME/
+    # Fix permissions BEFORE copying your files
+    chmod -R +w $QMK_HOME
 
-    mkdir --parents "$QMK_HOME/keyboards/${keyboard}"
-    cp ${src}/* --recursive "$QMK_HOME/keyboards/${keyboard}"
+    mkdir -p "$QMK_HOME/keyboards/${keyboard}"
+    cp -r ${src}/* "$QMK_HOME/keyboards/${keyboard}/"
     tree "$QMK_HOME/keyboards/${keyboard}"
 
-    chmod 777 $QMK_FIRMWARE --recursive
     cd $QMK_FIRMWARE
 
     runHook postUnpack
+  '';
+
+  patchPhase = ''
+    runHook prePatch
+
+    ls -l "$QMK_FIRMWARE/util/"
+    patchShebangs "$QMK_HOME/util/"
+    
+    runHook postPatch
   '';
 
   configurePhase = ''
@@ -79,17 +99,11 @@ stdenv.mkDerivation rec {
     echo "Key map version: $FIRMWARE_VERSION"
     echo $FIRMWARE_VERSION > tmp/version
 
-    qmk compile --clean \
-      --keyboard ${keyboard} \
-      --keymap ${keymap} \
-      --env handedness=left
-    mv ./*.hex tmp/firmware_left.hex
+    make VERBOSE=true ${keyboard}:${keymap}:all # || true
+    # arm-none-eabi-objcopy -O ihex .build/snowflake_v4_default.elf .build/snowflake_v4_default.tmp 
+    # ./util/uf2conv.py .build/snowflake_v4_default.tmp --output .build/snowflake_v4_default.uf2 --convert --family RP2040
 
-    qmk compile --clean \
-      --keyboard ${keyboard} \
-      --keymap ${keymap} \
-      --env handedness=right
-    mv ./*.hex tmp/firmware_right.hex
+    mv .build/*.uf2 tmp/firmware.uf2
 
     runHook postBuild
   '';
@@ -97,15 +111,22 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
-    mkdir --parents $out/bin
-    mv tmp/*.hex $out/bin
+    mkdir -p $out/bin
+    mv tmp/*.uf2 $out/bin
 
-    mkdir --parents $out/share
+    mkdir -p $out/share
     mv tmp/version $out/share/
 
-    mkdir --parents $out/share/docs
+    mkdir -p $out/share/docs
     cp ${src}/keymaps/default/keymap.c $out/share/docs/
 
     runHook postInstall
   '';
+
+  meta = with lib; {
+    description = "Firmware for the Snowflake v4 keyboard";
+    homepage = "https://github.com/Tygo-van-den-hurk/snowflake-v2-firmware";
+    maintainers = with maintainers; [ Tygo-van-den-hurk ];
+    license = with licenses; [ epl20 ];
+  };
 }

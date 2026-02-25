@@ -2,7 +2,7 @@ pkgs:
 
 let
 
-  firmware = "firmware/snowflake/v2/keymap/default";
+  firmware = "firmware/snowflake/v4/keymap/default";
 
 in
 

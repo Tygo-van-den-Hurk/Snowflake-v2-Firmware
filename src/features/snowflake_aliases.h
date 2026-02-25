@@ -5,13 +5,6 @@
 
 #include "snowflake_layers.h"
 
-//` Mod bits
-
-#define SHIFT (MOD_BIT(KC_LEFT_SHIFT) | MOD_BIT(KC_RIGHT_SHIFT))
-#define CTRL (MOD_BIT(KC_LEFT_CTRL) | MOD_BIT(KC_RIGHT_CTRL))
-#define ALT (MOD_BIT(KC_LEFT_ALT) | MOD_BIT(KC_RIGHT_ALT))
-#define GUI (MOD_BIT(KC_LEFT_GUI) | MOD_BIT(KC_RIGHT_GUI))
-
 //` QMK Return Codes
 
 #define CONTINUE true

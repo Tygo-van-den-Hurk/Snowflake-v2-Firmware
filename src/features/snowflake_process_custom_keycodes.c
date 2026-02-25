@@ -15,6 +15,7 @@
  */
 bool Snowflake_process_custom_keycodes(uint16_t keycode, keyrecord_t *record) {
 
+  
   if (keycode < SAFE_RANGE)
     return CONTINUE;
 

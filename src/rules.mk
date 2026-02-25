@@ -1,13 +1,25 @@
-
-# Split keyboard and communication
+# Split keyboard
 SPLIT_KEYBOARD = yes
 
 # I2C communication
-I2C = yes
-I2C_DRIVER_REQUIRED = yes
+# I2C = yes
+# I2C_DRIVER_REQUIRED = yes
+
+# UART communication
+SPLIT_TRANSPORT = serial
+UART_DRIVER_REQUIRED = yes
+SERIAL_DRIVER = vendor
+
+OLED_ENABLE = yes
+OLED_DRIVER = ssd1306
+OLED_TRANSPORT = i2c
+SRC += features/snowflake_oled.c
 
 # Print debug information
 CONSOLE_ENABLE = yes
+
+# Allows you to print keycodes as a human readable string.
+KEYCODE_STRING_ENABLE = yes
 
 # For enabling VIA support
 VIA_ENABLE = no
@@ -30,13 +42,6 @@ DYNAMIC_MACRO_ENABLE = yes
 
 # Allows for overriding keys
 KEY_OVERRIDE_ENABLE = yes
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AVR Optimisations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-# AVR required optimisations because of space constraints.
-# See: https://docs.qmk.fm/squeezing_avr#squeezing-the-most-out-of-avr
-
-# Link Time Optimisation -> Longer compile time, smaller binary size
-LTO_ENABLE = yes
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Extra SRC Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
 # These are the other files that the compiler needs to compile for the keyboard to work.

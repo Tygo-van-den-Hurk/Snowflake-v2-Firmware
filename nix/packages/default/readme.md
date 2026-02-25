@@ -9,4 +9,4 @@
 
 ## Overview
 
-This is essentially a alias to the `firmware/snowflake/v2/keymap/default` package this flake outputs.
+This is essentially a alias to the `firmware/snowflake/v4/keymap/default` package this flake outputs.
